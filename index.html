@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3KAL Media — Coming Soon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Playfair+Display:ital@1&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @keyframes scanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100vh); }
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.88); opacity: 1; }
+      70% { transform: scale(1.18); opacity: 0; }
+      100% { transform: scale(0.88); opacity: 0; }
+    }
+    @keyframes revealUp {
+      from { opacity: 0; transform: translateY(50px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes revealDown {
+      from { opacity: 0; transform: translateY(-40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50%     { opacity: 0; }
+    }
+    @keyframes rotateSlow {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    @keyframes rotateSlowReverse {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(-360deg); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes glitchShift {
+      0%   { clip-path: inset(0 0 95% 0); transform: translate(-3px,0); }
+      10%  { clip-path: inset(20% 0 60% 0); transform: translate(3px,0); }
+      20%  { clip-path: inset(50% 0 30% 0); transform: translate(-2px,0); }
+      30%  { clip-path: inset(70% 0 5% 0); transform: translate(2px,0); }
+      40%  { clip-path: inset(85% 0 0 0); transform: translate(-1px,0); }
+      50%  { clip-path: inset(0 0 0 0); transform: translate(0,0); }
+      100% { clip-path: inset(0 0 0 0); transform: translate(0,0); }
+    }
+    @keyframes noiseMove {
+      0%   { background-position: 0 0; }
+      100% { background-position: 100px 100px; }
+    }
+    @keyframes barFill {
+      from { width: 0%; }
+      to   { width: 73%; }
+    }
+    @keyframes comingSoonPulse {
+      0%,100% { text-shadow: 0 0 10px rgba(204,0,0,0.4), 0 0 30px rgba(204,0,0,0.1); }
+      50%     { text-shadow: 0 0 24px rgba(204,0,0,0.9), 0 0 55px rgba(204,0,0,0.35); }
+    }
+    @keyframes flapDown {
+      from { transform: rotateX(0deg); }
+      to   { transform: rotateX(-90deg); }
+    }
+    @keyframes flapUp {
+      from { transform: rotateX(90deg); }
+      to   { transform: rotateX(0deg); }
+    }
+
+    html, body {
+      height: 100%;
+      background-color: #000;
+      color: #fff;
+      font-family: 'Barlow Condensed', sans-serif;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 999; opacity: 0.3;
+      animation: noiseMove 0.4s steps(1) infinite;
+    }
+    body::after {
+      content: '';
+      position: fixed; top:0; left:0; right:0; height:3px;
+      background: linear-gradient(transparent, rgba(220,0,0,0.15), transparent);
+      animation: scanline 5s linear infinite;
+      pointer-events: none; z-index: 998;
+    }
+
+    .accent-bar       { position:fixed; left:0;  top:0; bottom:0; width:4px; background:#cc0000; box-shadow:0 0 20px #cc0000,0 0 40px #aa0000; z-index:10; }
+    .accent-bar-right { position:fixed; right:0; top:0; bottom:0; width:4px; background:#cc0000; box-shadow:0 0 20px #cc0000,0 0 40px #aa0000; z-index:10; }
+
+    .corner { position:fixed; width:30px; height:30px; z-index:20; border-color:#cc0000; border-style:solid; }
+    .corner-tl { top:18px;    left:18px;  border-width:2px 0 0 2px; }
+    .corner-tr { top:18px;    right:18px; border-width:2px 2px 0 0; }
+    .corner-bl { bottom:18px; left:18px;  border-width:0 0 2px 2px; }
+    .corner-br { bottom:18px; right:18px; border-width:0 2px 2px 0; }
+
+    .bg-grid {
+      position:fixed; inset:0;
+      background-image:
+        linear-gradient(rgba(204,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(204,0,0,0.03) 1px, transparent 1px);
+      background-size:60px 60px; z-index:0; pointer-events:none;
+    }
+    .bg-glow {
+      position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+      width:700px; height:500px;
+      background:radial-gradient(ellipse at center, rgba(180,0,0,0.09) 0%, transparent 70%);
+      pointer-events:none; z-index:0;
+    }
+
+    .status-line {
+      position:fixed; top:24px; left:50%; transform:translateX(-50%);
+      font-size:10px; font-weight:600; letter-spacing:0.4em;
+      color:#cc0000; text-transform:uppercase;
+      animation:fadeIn 1.5s ease forwards; animation-delay:2.2s; opacity:0;
+      white-space:nowrap; z-index:50;
+    }
+    .status-line span { animation:blink 1.2s step-start infinite; margin-right:8px; }
+
+    /* ── WRAPPER ── */
+    .wrapper {
+      position:relative; min-height:100vh;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      padding:70px 30px 60px; z-index:1;
+    }
+
+    /* ── LOGO RING ── */
+    .logo-ring-wrap {
+      position:relative; width:164px; height:164px;
+      display:flex; align-items:center; justify-content:center;
+      margin-bottom:20px;
+      animation:revealDown 0.9s cubic-bezier(0.22,1,0.36,1) forwards;
+      animation-delay:0.3s; opacity:0;
+    }
+    .ring-outer {
+      position:absolute; inset:0; border-radius:50%;
+      border:1.5px solid rgba(204,0,0,0.4);
+      animation:rotateSlow 12s linear infinite;
+    }
+    .ring-outer::before {
+      content:''; position:absolute; top:-4px; left:50%; transform:translateX(-50%);
+      width:8px; height:8px; background:#cc0000; border-radius:50%;
+      box-shadow:0 0 10px #cc0000, 0 0 22px #cc0000;
+    }
+    .ring-mid {
+      position:absolute; inset:16px; border-radius:50%;
+      border:1px dashed rgba(204,0,0,0.2);
+      animation:rotateSlowReverse 20s linear infinite;
+    }
+    .ring-pulse {
+      position:absolute; inset:30px; border-radius:50%;
+      border:2px solid #cc0000;
+      animation:pulse-ring 2.4s ease-out infinite;
+    }
+    .logo-inner { position:relative; z-index:2; text-align:center; }
+    .logo-num {
+      font-family:'Bebas Neue',sans-serif; font-size:34px; line-height:1;
+      color:#fff; letter-spacing:0.08em;
+      text-shadow:0 0 20px rgba(220,0,0,0.6);
+    }
+    .logo-sub {
+      font-size:8px; letter-spacing:0.5em; color:#cc0000;
+      text-transform:uppercase; margin-top:3px;
+    }
+
+    /* ── BRAND ── */
+    .brand-block { text-align:center; margin-bottom:4px; }
+    .brand-name {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(58px,10vw,110px);
+      line-height:0.9; letter-spacing:0.06em; color:#fff;
+      display:block; position:relative;
+      animation:revealUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards;
+      animation-delay:0.7s; opacity:0;
+    }
+    .brand-name::after {
+      content:attr(data-text); position:absolute; top:0; left:0;
+      color:#cc0000; pointer-events:none;
+      animation:glitchShift 7s steps(1) infinite; animation-delay:2s;
+    }
+    .brand-type {
+      font-size:clamp(12px,1.8vw,17px); letter-spacing:0.55em;
+      color:#cc0000; text-transform:uppercase; margin-top:5px; display:block;
+      animation:revealUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards;
+      animation-delay:1s; opacity:0;
+    }
+
+    /* ── COMING SOON ── */
+    .coming-soon-heading {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(26px,4.5vw,48px);
+      letter-spacing:0.2em; color:#fff; text-align:center;
+      margin-top:12px; margin-bottom:2px;
+      animation:revealUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards, comingSoonPulse 3s ease-in-out infinite;
+      animation-delay:1.2s, 2s; opacity:0;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      display:flex; align-items:center; gap:14px;
+      margin:12px 0 10px;
+      animation:fadeIn 1s ease forwards; animation-delay:1.3s; opacity:0;
+    }
+    .div-line   { flex:1; max-width:90px; height:1px; background:linear-gradient(to right,transparent,#cc0000); }
+    .div-line-r { background:linear-gradient(to left,transparent,#cc0000); }
+    .div-diamond { width:7px; height:7px; background:#cc0000; transform:rotate(45deg); box-shadow:0 0 10px #cc0000; }
+
+    /* ── QUOTE ── */
+    .quote-block {
+      text-align:center; max-width:500px;
+      animation:fadeIn 1s ease forwards; animation-delay:1.5s; opacity:0;
+      margin-bottom:16px; padding:0 12px;
+    }
+    .quote-mark { font-size:28px; color:#cc0000; line-height:0.5; display:block; margin-bottom:8px; opacity:0.7; }
+    .quote-text {
+      font-family:'Playfair Display',serif; font-style:italic;
+      font-size:clamp(13px,2vw,17px); color:rgba(255,255,255,0.7);
+      line-height:1.6;
+    }
+    .quote-text em { color:#cc0000; font-style:normal; font-weight:bold; }
+    .quote-author {
+      font-size:10px; letter-spacing:0.4em; color:rgba(255,255,255,0.28);
+      text-transform:uppercase; margin-top:10px; display:block;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-block {
+      width:min(400px,78vw);
+      animation:revealUp 1s ease forwards; animation-delay:1.8s; opacity:0;
+      margin-bottom:22px;
+    }
+    .progress-labels {
+      display:flex; justify-content:space-between;
+      font-size:10px; letter-spacing:0.25em;
+      color:rgba(255,255,255,0.28); margin-bottom:7px; text-transform:uppercase;
+    }
+    .progress-labels span:last-child { color:#cc0000; }
+    .progress-track {
+      width:100%; height:2px; background:rgba(255,255,255,0.07); position:relative;
+    }
+    .progress-fill {
+      height:100%;
+      background:linear-gradient(to right,#880000,#cc0000,#ff4444);
+      box-shadow:0 0 12px #cc0000;
+      animation:barFill 2.5s cubic-bezier(0.4,0,0.2,1) forwards;
+      animation-delay:2.2s; width:0%;
+    }
+
+    /* ── FLIP COUNTDOWN ── */
+    .countdown-wrap {
+      display:flex; align-items:flex-start; gap:10px;
+      animation:fadeIn 1s ease forwards; animation-delay:2s; opacity:0;
+    }
+    .count-item { text-align:center; }
+    .count-label-top {
+      font-size:9px; letter-spacing:0.3em; color:rgba(255,255,255,0.28);
+      text-transform:uppercase; display:block; margin-bottom:6px;
+    }
+
+    /* flip card container */
+    .flip-card {
+      position:relative; width:66px; height:80px;
+      perspective:400px;
+    }
+    /* Static top half (shows current value, top half) */
+    .f-static-top {
+      position:absolute; left:0; right:0; top:0; height:40px;
+      background:#111; border:1px solid rgba(204,0,0,0.22);
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      border-radius:6px 6px 0 0; overflow:hidden;
+    }
+    /* Static bottom half (shows NEW value, bottom half) */
+    .f-static-bot {
+      position:absolute; left:0; right:0; top:40px; height:40px;
+      background:#0e0e0e; border:1px solid rgba(204,0,0,0.22);
+      border-top:none;
+      border-radius:0 0 6px 6px; overflow:hidden;
+    }
+    /* Digit inside static top — positioned so top half of digit shows */
+    .f-static-top .digit {
+      font-family:'Bebas Neue',sans-serif; font-size:54px; line-height:1;
+      color:#fff; text-align:center; display:block;
+      text-shadow:0 0 14px rgba(204,0,0,0.5);
+      position:absolute; top:0; left:0; right:0;
+    }
+    /* Digit inside static bot — positioned so bottom half of digit shows */
+    .f-static-bot .digit {
+      font-family:'Bebas Neue',sans-serif; font-size:54px; line-height:1;
+      color:#fff; text-align:center; display:block;
+      text-shadow:0 0 14px rgba(204,0,0,0.5);
+      position:absolute; bottom:0; left:0; right:0;
+    }
+
+    /* Animated flap (top half folds down) */
+    .f-flap-top {
+      position:absolute; left:0; right:0; top:0; height:40px;
+      background:#151515; border:1px solid rgba(204,0,0,0.28);
+      border-radius:6px 6px 0 0; overflow:hidden;
+      transform-origin:bottom center;
+      backface-visibility:hidden;
+    }
+    .f-flap-top .digit {
+      font-family:'Bebas Neue',sans-serif; font-size:54px; line-height:1;
+      color:#fff; text-align:center; display:block;
+      text-shadow:0 0 14px rgba(204,0,0,0.5);
+      position:absolute; top:0; left:0; right:0;
+    }
+    /* Animated flap (bottom half unfolds down) */
+    .f-flap-bot {
+      position:absolute; left:0; right:0; top:40px; height:40px;
+      background:#111; border:1px solid rgba(204,0,0,0.28);
+      border-top:none; border-radius:0 0 6px 6px; overflow:hidden;
+      transform-origin:top center;
+      backface-visibility:hidden;
+    }
+    .f-flap-bot .digit {
+      font-family:'Bebas Neue',sans-serif; font-size:54px; line-height:1;
+      color:#fff; text-align:center; display:block;
+      text-shadow:0 0 14px rgba(204,0,0,0.5);
+      position:absolute; bottom:0; left:0; right:0;
+    }
+
+    .f-flap-top.go { animation:flapDown 0.3s ease-in forwards; }
+    .f-flap-bot.go { animation:flapUp   0.3s ease-out 0.3s forwards; }
+
+    .count-sep-col {
+      font-family:'Bebas Neue',sans-serif; font-size:46px; color:#cc0000;
+      line-height:1; margin-top:22px;
+      animation:blink 1s step-start infinite;
+    }
+
+    .tagline {
+      position:fixed; bottom:22px; left:50%; transform:translateX(-50%);
+      font-size:9px; letter-spacing:0.38em; color:rgba(255,255,255,0.13);
+      text-transform:uppercase; white-space:nowrap;
+      animation:fadeIn 2s ease forwards; animation-delay:2.5s; opacity:0; z-index:50;
+    }
+
+    @media (max-width:520px) {
+      .logo-ring-wrap { width:120px; height:120px; }
+      .logo-num { font-size:24px; }
+      .flip-card { width:50px; height:60px; }
+      .f-static-top,.f-flap-top { height:30px; }
+      .f-static-bot,.f-flap-bot { top:30px; height:30px; }
+      .f-static-top .digit,.f-static-bot .digit,
+      .f-flap-top .digit,.f-flap-bot .digit { font-size:40px; }
+      .countdown-wrap { gap:5px; }
+      .count-sep-col { font-size:32px; margin-top:16px; }
+      .div-line { max-width:55px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+  <div class="accent-bar"></div>
+  <div class="accent-bar-right"></div>
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+
+  <div class="status-line"><span>●</span> LAUNCHING IN 7 DAYS — STAND BY</div>
+
+  <div class="wrapper">
+
+    <!-- Logo Ring -->
+    <div class="logo-ring-wrap">
+      <div class="ring-outer"></div>
+      <div class="ring-mid"></div>
+      <div class="ring-pulse"></div>
+      <div class="logo-inner">
+        <div class="logo-num">3KAL</div>
+        <div class="logo-sub">Media</div>
+      </div>
+    </div>
+
+    <!-- Brand -->
+    <div class="brand-block">
+      <span class="brand-name" data-text="3KAL">3KAL</span>
+      <span class="brand-type">Media</span>
+    </div>
+
+    <!-- Coming Soon -->
+    <div class="coming-soon-heading">Coming Soon</div>
+
+    <!-- Divider -->
+    <div class="divider">
+      <div class="div-line"></div>
+      <div class="div-diamond"></div>
+      <div class="div-line div-line-r"></div>
+    </div>
+
+    <!-- Quote -->
+    <div class="quote-block">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">We are creating something <em>greater than you think</em> —<br>a media force that redefines what's possible.</p>
+      <span class="quote-author">— 3KAL Media</span>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-block">
+      <div class="progress-labels">
+        <span>Build Progress</span>
+        <span>73%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Flip Countdown -->
+    <div class="countdown-wrap">
+      <div class="count-item">
+        <span class="count-label-top">Days</span>
+        <div class="flip-card" id="fc-d">
+          <div class="f-static-top"><span class="digit" id="st-d">07</span></div>
+          <div class="f-static-bot"><span class="digit" id="sb-d">07</span></div>
+          <div class="f-flap-top"  id="ft-d"><span class="digit" id="fd-t-d">07</span></div>
+          <div class="f-flap-bot"  id="fb-d"><span class="digit" id="fd-b-d">07</span></div>
+        </div>
+      </div>
+      <div class="count-sep-col">:</div>
+      <div class="count-item">
+        <span class="count-label-top">Hours</span>
+        <div class="flip-card" id="fc-h">
+          <div class="f-static-top"><span class="digit" id="st-h">00</span></div>
+          <div class="f-static-bot"><span class="digit" id="sb-h">00</span></div>
+          <div class="f-flap-top"  id="ft-h"><span class="digit" id="fd-t-h">00</span></div>
+          <div class="f-flap-bot"  id="fb-h"><span class="digit" id="fd-b-h">00</span></div>
+        </div>
+      </div>
+      <div class="count-sep-col">:</div>
+      <div class="count-item">
+        <span class="count-label-top">Mins</span>
+        <div class="flip-card" id="fc-m">
+          <div class="f-static-top"><span class="digit" id="st-m">00</span></div>
+          <div class="f-static-bot"><span class="digit" id="sb-m">00</span></div>
+          <div class="f-flap-top"  id="ft-m"><span class="digit" id="fd-t-m">00</span></div>
+          <div class="f-flap-bot"  id="fb-m"><span class="digit" id="fd-b-m">00</span></div>
+        </div>
+      </div>
+      <div class="count-sep-col">:</div>
+      <div class="count-item">
+        <span class="count-label-top">Secs</span>
+        <div class="flip-card" id="fc-s">
+          <div class="f-static-top"><span class="digit" id="st-s">00</span></div>
+          <div class="f-static-bot"><span class="digit" id="sb-s">00</span></div>
+          <div class="f-flap-top"  id="ft-s"><span class="digit" id="fd-t-s">00</span></div>
+          <div class="f-flap-bot"  id="fb-s"><span class="digit" id="fd-b-s">00</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tagline">© 2025 3KAL Media — Greater Than You Think</div>
+
+  <script>
+    const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+    const launch = new Date(Date.now() + SEVEN_DAYS_MS);
+
+    function pad(n) { return String(Math.max(0,n)).padStart(2,'0'); }
+
+    const prev = { d: null, h: null, m: null, s: null };
+
+    function doFlip(key, newVal) {
+      const oldVal = prev[key];
+      prev[key] = newVal;
+
+      // Static top always shows current value top-half
+      document.getElementById('st-' + key).textContent = newVal;
+      // Static bottom always shows current value bottom-half
+      // (we set it to newVal after flip completes)
+
+      // Flap top shows OLD value (will fold down)
+      document.getElementById('fd-t-' + key).textContent = oldVal || newVal;
+      // Flap bottom shows NEW value (will unfold from top)
+      document.getElementById('fd-b-' + key).textContent = newVal;
+
+      const ft = document.getElementById('ft-' + key);
+      const fb = document.getElementById('fb-' + key);
+
+      ft.classList.remove('go');
+      fb.classList.remove('go');
+      void ft.offsetWidth; // reflow
+
+      ft.classList.add('go');
+      fb.classList.add('go');
+
+      // After animation completes, settle static bottom
+      setTimeout(() => {
+        document.getElementById('sb-' + key).textContent = newVal;
+        ft.classList.remove('go');
+        fb.classList.remove('go');
+        // Reset flap top to new value for next flip
+        document.getElementById('fd-t-' + key).textContent = newVal;
+      }, 700);
+    }
+
+    function getTime() {
+      const diff = Math.max(0, launch - Date.now());
+      return {
+        d: pad(Math.floor(diff / 86400000)),
+        h: pad(Math.floor((diff % 86400000) / 3600000)),
+        m: pad(Math.floor((diff % 3600000) / 60000)),
+        s: pad(Math.floor((diff % 60000) / 1000))
+      };
+    }
+
+    // Init
+    const init = getTime();
+    ['d','h','m','s'].forEach(k => {
+      prev[k] = init[k];
+      document.getElementById('st-' + k).textContent = init[k];
+      document.getElementById('sb-' + k).textContent = init[k];
+      document.getElementById('fd-t-' + k).textContent = init[k];
+      document.getElementById('fd-b-' + k).textContent = init[k];
+    });
+
+    setInterval(() => {
+      const t = getTime();
+      ['d','h','m','s'].forEach(k => {
+        if (t[k] !== prev[k]) doFlip(k, t[k]);
+      });
+    }, 1000);
+  </script>
+
+</body>
+</html>
